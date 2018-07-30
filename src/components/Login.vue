@@ -71,7 +71,7 @@ export default {
               console.log('is password match : '+isMatch)
               if (isMatch) {
                 // generate token -> set in local storage 
-                let token = jwt.sign({ email: this.loginEmail}, 'adadeh')
+                let token = jwt.sign({ email: this.loginEmail, userId: users[key].userId}, 'adadeh')
 
                 // token won't be assigned to local storage -> need to be fixed
                 localStorage.setItem('token',token)

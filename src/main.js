@@ -9,7 +9,10 @@ import 'font-awesome/css/font-awesome.min.css'
 import firebase from 'firebase/app'
 
 Vue.use(Vuetify, {
-  iconfont: 'fa'
+  iconfont: 'fa',
+  icons: {
+    'trash': 'fa trash-alt'
+  }
 })
 
 Vue.use(firebase)

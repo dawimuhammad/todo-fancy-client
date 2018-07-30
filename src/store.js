@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import database from './firebase/firebase.js'
+import jwt from 'jsonwebtoken'
 
 Vue.use(Vuex)
 
@@ -8,7 +9,8 @@ export default new Vuex.Store({
   state: {
     dialogLogin: false,
     dialogRegister: false,
-    users: []
+    users: [],
+    tasks: []
   },
   mutations: {
     changeLoginFormStatus (state, payload) {
@@ -22,6 +24,9 @@ export default new Vuex.Store({
     },
     emptyCommit() {
 
+    },
+    getTasks (state, payload) {
+      return state.tasks = payload
     }
   },
   actions: {
@@ -56,11 +61,62 @@ export default new Vuex.Store({
     getUsers(context) {
       const ref = database.ref('todo')
       const users = ref.child('users')
-          users.on("value", function(snapshot) {
-              context.commit('getUsers', snapshot.val())
-            }, function (errorObject) {
-              console.log("The read failed: " + errorObject.code);
-            })
+      
+      users.on("value", function(snapshot) {
+          context.commit('getUsers', snapshot.val())
+        }, function (errorObject) {
+          console.log("The read failed: " + errorObject.code);
+        })
+    },
+    postTaskByUserId ({ commit }, payload) {
+      let token = jwt.decode(localStorage.getItem('token'))  
+      let userId = token.userId
+
+      let ref = database.ref(`todo/users/${userId}`)
+      let postTask = ref.child('tasks')
+      let newPostTask = postTask.push()
+      let taskId = newPostTask.key
+      let defaultTaskStatus = 0
+
+      newPostTask.set({
+          taskId: taskId,
+          taskTitle: payload.taskTitle,
+          due: payload.taskDue,
+          status: defaultTaskStatus
+      })
+
+      commit('emptyCommit')
+    },
+    getTaskByUserId ({ commit }) {
+      // get userId from token
+      let token = jwt.decode(localStorage.getItem('token'))  
+      let userId = token.userId
+
+      // reference to firebase rdb
+      let ref = database.ref(`todo/users/${userId}/tasks`)
+
+      // get data
+      ref.on("value", function(snapshot) {
+        commit('getTasks', snapshot.val())
+      }, function (errorObject) {
+        console.log("The read failed: " + errorObject.code);
+      })
+    },
+    updateTaskByUserId ({ commit }, payload) {
+      // get userId from token
+      let token = jwt.decode(localStorage.getItem('token'))  
+      let userId = token.userId
+
+      let taskId = payload.taskId
+
+      // reference to firebase rdb
+      let ref = database.ref(`todo/users/${userId}/tasks/${taskId}`)
+
+      ref.update({
+        status: payload.status
+      })
+
+      commit('emptyCommit')
     }
   }
 })
