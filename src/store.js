@@ -105,7 +105,7 @@ export default new Vuex.Store({
       let ref = database.ref(`todo/users/${userId}/tasks`)
 
       // get data
-      ref.on("value", function(snapshot) {
+      ref.orderByChild("status").on("value", function(snapshot) {
         commit('getTasks', snapshot.val())
       }, function (errorObject) {
         console.log("The read failed: " + errorObject.code);

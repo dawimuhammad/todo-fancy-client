@@ -58,6 +58,7 @@ export default {
 body {
     background-image: url("../assets/todo-bg.jpeg");
     background-size: 100% auto;
+    background-repeat: repeat-y;
 }
 
 .started {

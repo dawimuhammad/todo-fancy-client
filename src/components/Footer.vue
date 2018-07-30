@@ -2,8 +2,8 @@
   <v-footer dark height="auto">
     <v-card flat tile class="light-blue darken-1 white--text text-xs-center">
       <v-card-text class="py-0">
-        <v-btn v-for="icon in icons" :key="icon" class="mx-3 white--text" icon >
-          <v-icon size="24px">{{ icon }}</v-icon>
+        <v-btn v-for="(media, i) in social" :key="i" class="mx-3 white--text" icon>
+          <a v-bind:href="media.url" class="media-link"><v-icon size="24px">{{ media.icon }}</v-icon></a>
         </v-btn>
       </v-card-text>
 
@@ -26,13 +26,27 @@
 export default {
     name: 'Footer',
     data: () => ({
-      icons: [
-        'fa-github',
-        'fa-twitter',
-        'fa-linkedin',
-        'fa-instagram',
-        'fa-facebook'
+      social: [ 
+        {
+          icon: 'fa-github',
+          url: 'https://github.com/dawimuhammad'
+        }, {
+          icon: 'fa-twitter',
+          url: 'https://twitter.com/dawimuhammad'
+        }, {
+          icon: 'fa-linkedin',
+          url: 'https://www.linkedin.com/in/dawimuhammad/'
+        }, {
+          icon: 'fa-instagram',
+          url: 'https://www.instagram.com/muhamadhaddawi/'
+        }
       ]
     })
 }
 </script>
+
+<style>
+.media-link {
+  color:aliceblue;
+}
+</style>

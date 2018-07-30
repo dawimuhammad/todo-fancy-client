@@ -49,7 +49,8 @@ export default {
                 title: 'Multiple inputs',
                 html:
                   'Task to do : <input id="todoTask" class="swal2-input">' +
-                  'Due date : <input type="date" id="todoDue" class="swal2-input">',
+                  'Due date : <input type="date" id="todoDue" class="swal2-input">' + 
+                  '<small>Important! Maximun due is 7 days ahead.</small>',
                 focusConfirm: false,
                 preConfirm: () => {
                   return {
@@ -58,6 +59,15 @@ export default {
                   }
                 }
               })
+
+              // let dueDateTask = newTask.inputTodoDueDate.split('-')
+              // let dueYear = dueDateTask[0]
+              // let dueMonth = dueDateTask[0]
+              // let dueDay = dueDateTask[0]
+
+              // let todayDate = new Date().getDate()
+              // let todayMonth = new Date().getMonth()
+              // let todayYear = new Date().getYear() + 1900
 
               if (newTask.inputTodoTask === "" || newTask.inputTodoDueDate === "") {
                 swal({
@@ -82,6 +92,8 @@ export default {
           }
 
           this.updateTaskByUserId(payload)
+
+          swal('Ouch', 'Data has been deleted', 'success')
         },
         setTaskDone: function (taskId) {
           let payload = {
