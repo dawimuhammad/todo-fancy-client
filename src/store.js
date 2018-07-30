@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import database from './firebase/firebase.js'
 import jwt from 'jsonwebtoken'
+import axios from 'axios'
 
 Vue.use(Vuex)
 
@@ -10,7 +11,9 @@ export default new Vuex.Store({
     dialogLogin: false,
     dialogRegister: false,
     users: [],
-    tasks: []
+    tasks: [],
+    todayWeather: [],
+    forecastWeather: []
   },
   mutations: {
     changeLoginFormStatus (state, payload) {
@@ -26,8 +29,14 @@ export default new Vuex.Store({
 
     },
     getTasks (state, payload) {
-      return state.tasks = payload
-    }
+        return state.tasks = payload
+    },
+    changeTodayWeather (state, payload) {
+        return state.todayWeather = payload
+    },
+    changeForecastWeather (state, payload) {
+      return state.forecastWeather = payload
+  }
   },
   actions: {
     changeLoginFormStatus({ commit }) {
@@ -117,6 +126,26 @@ export default new Vuex.Store({
       })
 
       commit('emptyCommit')
+    },
+    getWeatherForecast ({ commit }) {
+        axios.get('https://api.weatherbit.io/v2.0/forecast/daily?lat=-6.21462&lon=106.84513&days=10&key=37b243e97c6840d08294c747a4728640')
+        .then(function (response) {
+            // console.log(response.data)
+            commit('changeForecastWeather', response)
+        })
+        .catch(function (err) {
+            console.log(err)
+        })
+    },
+    getTodayWeather ({ commit }) {
+        axios.get('https://api.weatherbit.io/v2.0/current?lat=-6.21462&lon=106.84513&key=37b243e97c6840d08294c747a4728640')
+        .then(function (response) {
+            // console.log(response.data.data[0])
+            commit('changeTodayWeather', response.data.data[0])
+        })
+        .catch(function (err) {
+            console.log(err)
+        })
     }
   }
 })

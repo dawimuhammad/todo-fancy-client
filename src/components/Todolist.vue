@@ -16,7 +16,7 @@
               </v-card-title>
 
               <v-card-actions>
-                <v-btn color="success" flat>View</v-btn>
+                <v-btn color="success" flat v-on:click="getWeather(task.due)">View</v-btn>
                 <v-btn color="info" flat v-on:click='setTaskDone(task.taskId)'> Done</v-btn>
                 <v-spacer></v-spacer>
                 <v-btn color="error" flat v-on:click='deleteTask(task.taskId)'>Delete</v-btn>
@@ -40,7 +40,9 @@ export default {
         ...mapActions([
             'postTaskByUserId',
             'getTaskByUserId',
-            'updateTaskByUserId'
+            'updateTaskByUserId',
+            'getWeatherForecast',
+            'getTodayWeather'
         ]),
         inputTask: async function () {
               const {value: newTask} = await swal({
@@ -88,13 +90,52 @@ export default {
           }
 
           this.updateTaskByUserId(payload)
+        },
+        getWeather: function (due) {
+            let weatherData = this.forecastWeather.data.data
+            let weatherDataFound = 0
+
+            for (let i = 0; i < weatherData.length; i++) {
+                let weatherDataInDay = weatherData[i]
+                if (weatherDataInDay.datetime === due) {
+                    
+                    weatherDataFound = 1
+                    
+                    swal({
+                      title: `Forecast Weather at ${due}`,
+                      html: `Forecast       : ${weatherDataInDay.weather.description} <br> <br>
+                             Wind Speed     : ${weatherDataInDay.wind_spd} m/s<br> <br>
+                             Wind Direction : ${weatherDataInDay.wind_dir} '<br> <br>
+                             Temperature    : ${weatherDataInDay.temp} Celcius<br> <br>
+                             Pressure       : ${weatherDataInDay.pres} mb<br> <br>
+                             Humidity       : ${weatherDataInDay.rh} %<br> <br>
+                             Visibility     : ${weatherDataInDay.vis} Km<br> <br>
+                             <small>Some data shown above were average value of prediction</small>`,
+                      imageUrl: '',
+                      imageWidth: 400,
+                      imageAlt: 'JAKARTA'
+                    })
+                }
+            }
+
+
+            if (weatherDataFound === 0) {
+                swal({
+                  type: 'error',
+                  title: 'Weather data not Found!'
+                })
+            }
         }
     },
     computed: {
         ...mapState([
-          'tasks'
+          'tasks',
+          'todayWeather',
+          'forecastWeather'
         ])
     }, created: function () {
+        this.getTodayWeather()
+        this.getWeatherForecast()
         this.getTaskByUserId()
     }
 }
