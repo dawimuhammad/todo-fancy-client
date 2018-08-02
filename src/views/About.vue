@@ -42,11 +42,7 @@ export default {
   methods : {
     ...mapActions([
       'getTodayWeather'
-    ]),
-    logout: function () {
-        localStorage.removeItem('token')
-        this.$router.push('/')
-    }
+    ])
   }, computed: {
       ...mapState([
         'todayWeather'
